@@ -330,6 +330,8 @@ export default function Home() {
             <li><strong className="text-[#ccc]">RTC clock:</strong> CR1220 holder present but software broken (issue #4556). Not functional.</li>
             <li><strong className="text-[#ccc]">Second CAN bus:</strong> NOT populated. Requires soldering TJA1051T + passives. PRO version only.</li>
             <li><strong className="text-[#ccc]">MAX9924 VR:</strong> Default A2 mode for 12+ tooth wheels. Low tooth count needs B-mode conversion (desolder, lift pins 4/6, rewire). We do NOT use VR — HEI module handles it.</li>
+            <li><strong className="text-[#ccc]">Knock input (D14):</strong> HIP9011 knock IC NOT in F2 BOM. D14 is dead unless IC is soldered.</li>
+            <li><strong className="text-[#ccc]">B8/B9 (Fan/Main Relay):</strong> VNLD5090 OMNIFET II (U6). No external flyback — internal active clamp only. Source: rusEFI docs say "(no flyback here)" for both pins. External 1N4007 recommended for large relay loads.</li>
             <li><strong className="text-[#ccc]">Button inputs (C9, D2, D10):</strong> 10K PD default. Configurable via BT1/BT2/BT3 solder jumpers. 12V tolerant.</li>
             <li><strong className="text-[#ccc]">Analog inputs C3/C15/D1:</strong> 500K pull-down to GND. OK for resistive sensors, not for high-impedance sources.</li>
             <li><strong className="text-[#ccc]">WBO CJ125:</strong> E1 is PWM heater driver — NOT raw 12V. Wire LSU 4.9 directly to E1–E6. Never connect PIB-4 here.</li>
