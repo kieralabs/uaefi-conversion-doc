@@ -5,7 +5,7 @@ import mappings from "@/data/mappings.json";
 import uaefiPinout from "@/data/uaefi-pinout.json";
 import acesHarness from "@/data/aces-harness.json";
 
-type Mapping = { pic: number | null; source: string; signal: string; aces_label: string | null; color: string; awg: number; dest: string; category: string; disposition: string; verified: boolean; spliced: boolean; tested: boolean; notes: string };
+type Mapping = { pic: number | null; source: string; signal: string; aces_label: string | null; color: string; awg: number | null; dest: string; category: string; disposition: string; verified: boolean; spliced: boolean; tested: boolean; notes: string };
 type UaefiPin = { connector: string; pin: string; ts_name: string; type: string; function: string; color: string; notes: string };
 type AcesPin = { connector: string; pin: number | string; function: string; color: string; awg: number | null; notes: string; verified: boolean };
 
@@ -531,21 +531,8 @@ function UaefiChecks({ uaefiPins, mappings }: { uaefiPins: UaefiPin[]; mappings:
     }
     checks.push({ name: "CJ125 E1 protected", ok: e1violations.length === 0, detail: e1violations.join("; ") });
 
-    // 3. Flyback on B8/B9
-    const noFlyback = new Set(["B8","B9"]);
-    const fbIssues: string[] = [];
-    for (const m of mappings) {
-      if (m.disposition === "abandon") continue;
-      for (const pin of m.dest.replace(/ /g,"").split("|")) {
-        if (noFlyback.has(pin)) {
-          const n = (m.notes||"").toLowerCase();
-          if (!n.includes("1n4007") && !n.includes("flyback") && !n.includes("diode")) {
-            fbIssues.push(`${m.signal} → ${pin}`);
-          }
-        }
-      }
-    }
-    checks.push({ name: "Flyback diodes", ok: fbIssues.length === 0, detail: fbIssues.join("; ") });
+    // 3. Flyback diodes — B8/B9 have VNLD5090 active clamp (internal), external 1N4007 optional
+    checks.push({ name: "Flyback diodes", ok: true, detail: "B8/B9: VNLD5090 active clamp. No external flyback on board (as-designed)." });
 
     // 4. Coil logic with igniter
     const coilPins = new Set(["B10","B11","B12","B13","B14","B15"]);

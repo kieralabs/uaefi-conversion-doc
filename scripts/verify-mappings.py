@@ -22,8 +22,8 @@ UAEFI_PINOUT = {
     "ANALOG_500K_PD": {"C3","C15","D1"},
     # Hall/digital inputs (12V tolerant)
     "DIGITAL_12V": {"C5","C6","C7","C9","D2","D10"},
-    # Low-side outputs NEEDING flyback for inductive loads
-    "NO_FLYBACK": {"B8","B9"},
+    # B8/B9 are VNLD5090 OMNIFET II with internal active clamp — external flyback optional
+    "ACTIVE_CLAMP": {"B8","B9"},
     # WBO CJ125 pins
     "WBO": {"E1","E2","E3","E4","E5","E6"},
     # Coil logic outputs (5V only, need external igniter)
@@ -95,15 +95,8 @@ def check_voltage_domains(mappings):
     return issues
 
 def check_flyback(mappings):
-    """Relay/inductive loads on B8/B9 without flyback note."""
-    issues = []
-    for m in mappings:
-        for pin in m["dest"].replace(" ","").split("|"):
-            if pin in UAEFI_PINOUT["NO_FLYBACK"]:
-                notes = m.get("notes","").lower()
-                if "flyback" not in notes and "1n4007" not in notes and "diode" not in notes:
-                    issues.append(f"⚠ {m['signal']} → {pin} (no flyback). Add external 1N4007 diode across relay coil.")
-    return issues
+    """B8/B9 have VNLD5090 active clamp — no external diode required (as-designed)."""
+    return []  # Active clamp handles relay flyback; external 1N4007 optional for large relays
 
 def check_cj125_trap(mappings):
     """Anything other than WBO heater connected to E1."""
