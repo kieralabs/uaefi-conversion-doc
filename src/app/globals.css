@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-thinkpad: #1c1c1c;
+  --color-trackpoint: #e4002b;
+  --color-charcoal: #2a2a2a;
+  --color-steel: #555;
+  --color-fog: #999;
+  --color-verified: #0d7;
+}
+
+body {
+  background: var(--color-thinkpad);
+  color: #ddd;
+  font-family: 'IBM Plex Mono', 'SF Mono', 'Cascadia Code', monospace;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--color-trackpoint); }
