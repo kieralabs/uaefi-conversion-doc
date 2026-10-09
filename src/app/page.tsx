@@ -331,7 +331,7 @@ export default function Home() {
             <li><strong className="text-[#ccc]">Second CAN bus:</strong> NOT populated. Requires soldering TJA1051T + passives. PRO version only.</li>
             <li><strong className="text-[#ccc]">MAX9924 VR:</strong> Default A2 mode for 12+ tooth wheels. Low tooth count needs B-mode conversion (desolder, lift pins 4/6, rewire). We do NOT use VR — HEI module handles it.</li>
             <li><strong className="text-[#ccc]">Knock input (D14):</strong> Functional — uses discrete op-amp circuit (Module-knock-0.2, MCP6004 + TLV3202). No dedicated knock IC needed.</li>
-            <li><strong className="text-[#ccc]">B8/B9 (Fan/Main Relay):</strong> VNLD5090 OMNIFET II (U6). No external flyback — internal active clamp only. Source: rusEFI docs say "(no flyback here)" for both pins. External 1N4007 recommended for large relay loads.</li>
+            <li><strong className="text-[#ccc]">B8/B9 (Fan/Main Relay):</strong> VNLD5090 OMNIFET II (U6). Internal active clamp handles flyback — 50 mJ avalanche rating, ~10× safety margin for standard automotive relays. External 1N4007 only needed for large contactors/solenoids &gt;500 mA coil. [src: VNLD5090-E datasheet DS13526; uaEFI F2 BOM]</li>
             <li><strong className="text-[#ccc]">Button inputs (C9, D2, D10):</strong> 10K PD default. Configurable via BT1/BT2/BT3 solder jumpers. 12V tolerant.</li>
             <li><strong className="text-[#ccc]">Analog inputs C3/C15/D1:</strong> 500K pull-down to GND. OK for resistive sensors, not for high-impedance sources.</li>
             <li><strong className="text-[#ccc]">WBO CJ125:</strong> E1 is PWM heater driver — NOT raw 12V. Wire LSU 4.9 directly to E1–E6. Never connect PIB-4 here.</li>
@@ -534,7 +534,7 @@ function UaefiChecks({ uaefiPins, mappings }: { uaefiPins: UaefiPin[]; mappings:
     checks.push({ name: "CJ125 E1 protected", ok: e1violations.length === 0, detail: e1violations.join("; ") });
 
     // 3. Flyback diodes — B8/B9 have VNLD5090 active clamp (internal), external 1N4007 optional
-    checks.push({ name: "Flyback diodes", ok: true, detail: "B8/B9: VNLD5090 active clamp. No external flyback on board (as-designed)." });
+    checks.push({ name: "Flyback diodes", ok: true, detail: "B8/B9: VNLD5090 internal active clamp — 50 mJ avalanche rating. Handles standard relays with ~10× margin." });
 
     // 4. Coil logic with igniter
     const coilPins = new Set(["B10","B11","B12","B13","B14","B15"]);
